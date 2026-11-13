@@ -1,0 +1,13 @@
+{
+  "@@locale": "en",
+  "errorNetwork": "No internet connection. Please check your network and try again.",
+  "errorTimeout": "The request took too long. Please try again.",
+  "errorSecureConnection": "A secure connection could not be established.",
+  "errorCancelled": "The request was cancelled.",
+  "errorBadRequest": "Invalid request.",
+  "errorUnauthorized": "You are not authorized to perform this action.",
+  "errorNotFound": "The requested resource was not found.",
+  "errorServer": "Server error. Please try again later.",
+  "errorParsing": "We couldn't process the data received.",
+  "errorUnknown": "Something went wrong. Please try again."
+}

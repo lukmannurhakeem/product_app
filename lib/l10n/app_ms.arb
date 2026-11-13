@@ -1,0 +1,13 @@
+{
+  "@@locale": "ms",
+  "errorNetwork": "Tiada sambungan internet. Sila semak rangkaian anda dan cuba lagi.",
+  "errorTimeout": "Permintaan mengambil masa terlalu lama. Sila cuba lagi.",
+  "errorSecureConnection": "Sambungan selamat tidak dapat diwujudkan.",
+  "errorCancelled": "Permintaan telah dibatalkan.",
+  "errorBadRequest": "Permintaan tidak sah.",
+  "errorUnauthorized": "Anda tidak dibenarkan melakukan tindakan ini.",
+  "errorNotFound": "Sumber yang diminta tidak ditemui.",
+  "errorServer": "Ralat pelayan. Sila cuba lagi nanti.",
+  "errorParsing": "Data yang diterima tidak dapat diproses.",
+  "errorUnknown": "Sesuatu telah berlaku. Sila cuba lagi."
+}
