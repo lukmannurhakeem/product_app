@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:product_app/core/extension/theme_extension.dart';
+import 'package:product_app/core/locator/locator.dart';
 import 'package:product_app/core/navigation/navigation_route.dart';
 import 'package:product_app/core/navigation/navigation_service.dart';
 
@@ -73,9 +74,9 @@ class _SplashScreenState extends State<SplashScreen>
   void _goNext() {
     if (!mounted) return;
 
-    // locator<NavigationService>().navigateToAndRemoveUntil(
-    //    NavigationRoutes.loginScreen,
-    // );
+    locator<NavigationService>().navigateToAndRemoveUntil(
+       NavigationRoutes.productScreen,
+    );
   }
 
   @override

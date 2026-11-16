@@ -41,4 +41,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorUnknown => 'Something went wrong. Please try again.';
+
+  @override
+  String get productsTitle => 'Products';
+
+  @override
+  String get productsEmpty => 'No products available.';
+
+  @override
+  String get retry => 'Retry';
 }

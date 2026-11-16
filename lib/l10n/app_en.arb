@@ -9,5 +9,9 @@
   "errorNotFound": "The requested resource was not found.",
   "errorServer": "Server error. Please try again later.",
   "errorParsing": "We couldn't process the data received.",
-  "errorUnknown": "Something went wrong. Please try again."
+  "errorUnknown": "Something went wrong. Please try again.",
+
+  "productsTitle": "Products",
+  "productsEmpty": "No products available.",
+  "retry": "Retry"
 }

@@ -9,5 +9,9 @@
   "errorNotFound": "Sumber yang diminta tidak ditemui.",
   "errorServer": "Ralat pelayan. Sila cuba lagi nanti.",
   "errorParsing": "Data yang diterima tidak dapat diproses.",
-  "errorUnknown": "Sesuatu telah berlaku. Sila cuba lagi."
+  "errorUnknown": "Sesuatu telah berlaku. Sila cuba lagi.",
+
+  "productsTitle": "Produk",
+  "productsEmpty": "Tiada produk tersedia.",
+  "retry": "Cuba lagi"
 }

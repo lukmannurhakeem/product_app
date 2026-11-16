@@ -4,6 +4,7 @@ import 'package:product_app/core/locator/locator.dart';
 import 'package:product_app/core/navigation/navigation_route.dart';
 import 'package:product_app/core/navigation/navigation_service.dart';
 import 'package:product_app/l10n/app_localizations.dart';
+import 'package:product_app/provider/product_provider.dart';
 import 'package:product_app/provider/theme_provider.dart';
 import 'package:product_app/service/snackbar_service.dart';
 import 'package:product_app/storage/theme_storage.dart';
@@ -27,6 +28,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => ThemeProvider(locator<ThemeStorage>()),
         ),
+        ChangeNotifierProvider<ProductProvider>.value(
+          value: locator<ProductProvider>(),
+        )
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, theme, _) => MaterialApp(

@@ -42,4 +42,13 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get errorUnknown => 'Sesuatu telah berlaku. Sila cuba lagi.';
+
+  @override
+  String get productsTitle => 'Produk';
+
+  @override
+  String get productsEmpty => 'Tiada produk tersedia.';
+
+  @override
+  String get retry => 'Cuba lagi';
 }
