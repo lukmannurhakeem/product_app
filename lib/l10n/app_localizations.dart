@@ -175,6 +175,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Retry'**
   String get retry;
+
+  /// No description provided for @productsEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'End of products'**
+  String get productsEnd;
 }
 
 class _AppLocalizationsDelegate

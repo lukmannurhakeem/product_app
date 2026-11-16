@@ -13,5 +13,7 @@
 
   "productsTitle": "Products",
   "productsEmpty": "No products available.",
-  "retry": "Retry"
+  "retry": "Retry",
+
+  "productsEnd": "End of products"
 }

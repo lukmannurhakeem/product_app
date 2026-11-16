@@ -13,5 +13,7 @@
 
   "productsTitle": "Produk",
   "productsEmpty": "Tiada produk tersedia.",
-  "retry": "Cuba lagi"
+  "retry": "Cuba lagi",
+
+  "productsEnd": "Produk tamat"
 }

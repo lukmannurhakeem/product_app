@@ -51,4 +51,7 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get retry => 'Cuba lagi';
+
+  @override
+  String get productsEnd => 'Produk tamat';
 }
