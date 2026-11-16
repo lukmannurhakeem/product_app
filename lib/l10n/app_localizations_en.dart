@@ -53,4 +53,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get productsEnd => 'End of products';
+
+  @override
+  String get searchHint => 'Search products';
+
+  @override
+  String get productsNoResults => 'No products found';
 }

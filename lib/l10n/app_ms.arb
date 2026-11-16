@@ -15,5 +15,7 @@
   "productsEmpty": "Tiada produk tersedia.",
   "retry": "Cuba lagi",
 
-  "productsEnd": "Produk tamat"
+  "productsEnd": "Produk tamat",
+  "searchHint": "Carian produk",
+  "productsNoResults": "Tiada produk dijumpai"
 }

@@ -19,4 +19,21 @@ class ProductsImpl implements ProductRepository {
       parser: (data) => ProductsResponse.fromJson(data as Map<String, dynamic>),
     );
   }
+
+  @override
+  Future<ProductsResponse> searchProducts({
+    required String query,
+    required int limit,
+    required int skip,
+  }) {
+    return _apiClient.get<ProductsResponse>(
+      ApiEndpoint.productsSearch,
+      queryParameters: {
+        'q': query,
+        'limit': limit,
+        'skip': skip,
+      },
+      parser: (data) => ProductsResponse.fromJson(data as Map<String, dynamic>),
+    );
+  }
 }

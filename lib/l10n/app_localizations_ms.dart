@@ -54,4 +54,10 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get productsEnd => 'Produk tamat';
+
+  @override
+  String get searchHint => 'Carian produk';
+
+  @override
+  String get productsNoResults => 'Tiada produk dijumpai';
 }

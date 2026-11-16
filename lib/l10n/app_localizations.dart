@@ -181,6 +181,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'End of products'**
   String get productsEnd;
+
+  /// No description provided for @searchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search products'**
+  String get searchHint;
+
+  /// No description provided for @productsNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No products found'**
+  String get productsNoResults;
 }
 
 class _AppLocalizationsDelegate

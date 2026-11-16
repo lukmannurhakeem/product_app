@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:product_app/data/model/products_response/products_response.dart';
 import 'package:product_app/data/repositories/product_repository.dart';
@@ -9,6 +11,7 @@ class ProductProvider extends ChangeNotifier {
   ProductProvider(this._productRepository);
 
   static const int _limit = 20;
+  static const Duration _debounceDuration = Duration(milliseconds: 500);
 
   List<Product> _products = [];
 
@@ -20,6 +23,9 @@ class ProductProvider extends ChangeNotifier {
   bool _hasMore = true;
   int _fetchIncrement = 0;
 
+  String _query = '';
+  Timer? _debounce;
+
   bool get isLoading => _isLoading;
 
   bool get isLoadingMore => _isLoadingMore;
@@ -27,6 +33,8 @@ class ProductProvider extends ChangeNotifier {
   bool get hasError => _hasError;
 
   bool get hasMore => _hasMore;
+
+  String get query => _query;
 
   Future<void> fetchProducts() async {
     final increment = ++_fetchIncrement;
@@ -37,10 +45,7 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final model = await _productRepository.fetchProducts(
-        limit: _limit,
-        skip: 0,
-      );
+      final model = await _request(0);
       if (increment != _fetchIncrement) return;
 
       _products = model.products;
@@ -65,10 +70,7 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final model = await _productRepository.fetchProducts(
-        limit: _limit,
-        skip: _products.length,
-      );
+      final model = await _request(_products.length);
       if (increment != _fetchIncrement) return;
 
       final existingIds = _products.map((p) => p.id).toSet();
@@ -85,5 +87,38 @@ class ProductProvider extends ChangeNotifier {
         notifyListeners();
       }
     }
+  }
+
+  Future<ProductsResponse> _request(int skip) {
+    if (_query.isEmpty) {
+      return _productRepository.fetchProducts(limit: _limit, skip: skip);
+    }
+    return _productRepository.searchProducts(
+      query: _query,
+      limit: _limit,
+      skip: skip,
+    );
+  }
+
+  void onSearchChanged(String value) {
+    _debounce?.cancel();
+    _debounce = Timer(_debounceDuration, () {
+      final newQuery = value.trim();
+      if (newQuery == _query) return;
+      _query = newQuery;
+      _products = [];
+      fetchProducts();
+    });
+  }
+
+  void resetSearch() {
+    _debounce?.cancel();
+    _query = '';
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
   }
 }

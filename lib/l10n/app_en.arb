@@ -15,5 +15,8 @@
   "productsEmpty": "No products available.",
   "retry": "Retry",
 
-  "productsEnd": "End of products"
+  "productsEnd": "End of products",
+
+  "searchHint": "Search products",
+  "productsNoResults": "No products found"
 }

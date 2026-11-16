@@ -14,12 +14,33 @@ class ProductScreen extends StatefulWidget {
 }
 
 class _ProductScreenState extends State<ProductScreen> {
+  final TextEditingController _searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) context.read<ProductProvider>().fetchProducts();
+      if (!mounted) return;
+      final provider = context.read<ProductProvider>();
+      provider.resetSearch();
+      provider.fetchProducts();
     });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onChanged(String value) {
+    setState(() {});
+    context.read<ProductProvider>().onSearchChanged(value);
+  }
+
+  void _onClear() {
+    _searchController.clear();
+    _onChanged('');
   }
 
   @override
@@ -28,7 +49,33 @@ class _ProductScreenState extends State<ProductScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.productsTitle)),
-      body: const SafeArea(child: _ProductBody()),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: context.spacing.paddingS,
+              child: TextField(
+                controller: _searchController,
+                onChanged: _onChanged,
+                textInputAction: TextInputAction.search,
+                decoration: InputDecoration(
+                  hintText: l10n.searchHint,
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: _searchController.text.isEmpty
+                      ? null
+                      : IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: _onClear,
+                  ),
+                  border: const OutlineInputBorder(),
+                  isDense: true,
+                ),
+              ),
+            ),
+            const Expanded(child: _ProductBody()),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -48,7 +95,7 @@ class _ProductBody extends StatelessWidget {
       return _ErrorView(onRetry: provider.fetchProducts);
     }
     if (products.isEmpty) {
-      return const _EmptyView();
+      return _EmptyView(isSearch: provider.query.isNotEmpty);
     }
     return _ProductGrid(
       products: products,
@@ -111,6 +158,7 @@ class _ProductGridState extends State<_ProductGrid> {
       onRefresh: widget.onRefresh,
       child: CustomScrollView(
         controller: _scrollController,
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
           SliverPadding(
@@ -150,11 +198,17 @@ class _ProductGridState extends State<_ProductGrid> {
 }
 
 class _EmptyView extends StatelessWidget {
-  const _EmptyView();
+  const _EmptyView({required this.isSearch});
+
+  final bool isSearch;
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text(AppLocalizations.of(context).productsEmpty));
+    final l10n = AppLocalizations.of(context);
+
+    return Center(
+      child: Text(isSearch ? l10n.productsNoResults : l10n.productsEmpty),
+    );
   }
 }
 
