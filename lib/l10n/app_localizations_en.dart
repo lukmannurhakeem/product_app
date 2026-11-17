@@ -10,8 +10,11 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get errorNetwork =>
-      'No internet connection. Please check your network and try again.';
+  String get errorNetwork => 'No internet connection.';
+
+  @override
+  String get errorNetworkDescription =>
+      'Please check your network and try again.';
 
   @override
   String get errorTimeout => 'The request took too long. Please try again.';

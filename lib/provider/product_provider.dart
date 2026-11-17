@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:product_app/core/errors/app_exception.dart';
+import 'package:product_app/core/errors/error_handler.dart';
 import 'package:product_app/data/model/products_response/products_response.dart';
 import 'package:product_app/data/repositories/product_repository.dart';
 import 'package:product_app/service/snackbar_service.dart';
@@ -19,9 +21,9 @@ class ProductProvider extends ChangeNotifier {
 
   bool _isLoading = false;
   bool _isLoadingMore = false;
-  bool _hasError = false;
   bool _hasMore = true;
   int _fetchIncrement = 0;
+  AppException? _error;
 
   String _query = '';
   Timer? _debounce;
@@ -30,7 +32,9 @@ class ProductProvider extends ChangeNotifier {
 
   bool get isLoadingMore => _isLoadingMore;
 
-  bool get hasError => _hasError;
+  AppException? get error => _error;
+
+  bool get hasError => _error != null;
 
   bool get hasMore => _hasMore;
 
@@ -40,7 +44,7 @@ class ProductProvider extends ChangeNotifier {
     final increment = ++_fetchIncrement;
     _isLoading = true;
     _isLoadingMore = false;
-    _hasError = false;
+    _error = null;
     _hasMore = true;
     notifyListeners();
 
@@ -52,8 +56,10 @@ class ProductProvider extends ChangeNotifier {
       _hasMore = model.products.isNotEmpty && _products.length < model.total;
     } catch (e, st) {
       if (increment != _fetchIncrement) return;
-      _hasError = true;
-      SnackbarService.showError(e, stackTrace: st);
+      _error = ErrorHandler.handle(e, st);
+      if (_products.isNotEmpty) {
+        SnackbarService.showError(e, stackTrace: st);
+      }
     } finally {
       if (increment == _fetchIncrement) {
         _isLoading = false;

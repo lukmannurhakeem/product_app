@@ -10,8 +10,11 @@ class AppLocalizationsMs extends AppLocalizations {
   AppLocalizationsMs([String locale = 'ms']) : super(locale);
 
   @override
-  String get errorNetwork =>
-      'Tiada sambungan internet. Sila semak rangkaian anda dan cuba lagi.';
+  String get errorNetwork => 'Tiada sambungan internet.';
+
+  @override
+  String get errorNetworkDescription =>
+      'Sila semak rangkaian anda dan cuba lagi.';
 
   @override
   String get errorTimeout =>
