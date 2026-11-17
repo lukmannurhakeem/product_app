@@ -53,4 +53,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get productsEnd => 'End of products';
+
+  @override
+  String get searchHint => 'Search products';
+
+  @override
+  String get productsNoResults => 'No products found';
+
+  @override
+  String get removeFavourite => 'Remove from favourites';
+
+  @override
+  String get addFavourite => 'Add to favourites';
+
+  @override
+  String get productDescription => 'Description';
+
+  @override
+  String productInStock(int stock) {
+    return '$stock in stock';
+  }
+
+  @override
+  String get productOutOfStock => 'Out of stock';
 }

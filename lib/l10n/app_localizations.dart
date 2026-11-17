@@ -181,6 +181,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'End of products'**
   String get productsEnd;
+
+  /// No description provided for @searchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search products'**
+  String get searchHint;
+
+  /// No description provided for @productsNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No products found'**
+  String get productsNoResults;
+
+  /// No description provided for @removeFavourite.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from favourites'**
+  String get removeFavourite;
+
+  /// No description provided for @addFavourite.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to favourites'**
+  String get addFavourite;
+
+  /// No description provided for @productDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get productDescription;
+
+  /// No description provided for @productInStock.
+  ///
+  /// In en, this message translates to:
+  /// **'{stock} in stock'**
+  String productInStock(int stock);
+
+  /// No description provided for @productOutOfStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Out of stock'**
+  String get productOutOfStock;
 }
 
 class _AppLocalizationsDelegate
