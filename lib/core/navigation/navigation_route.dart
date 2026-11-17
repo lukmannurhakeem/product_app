@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:product_app/screens/product/product_screen.dart';
+import 'package:product_app/screens/product_details/product_details_screen.dart';
 import 'package:product_app/screens/route_not_found_screen.dart';
 import 'package:product_app/screens/splash_screen.dart';
 
@@ -13,6 +14,8 @@ class NavigationRoutes {
 
   static const String splash = '/splash';
   static const String productScreen = '/productScreen';
+  static const String productDetailsScreen = '/productDetailsScreen';
+
 
   static WidgetBuilder getBuilder(String routeName, Object? arguments) {
     switch (routeName) {
@@ -21,6 +24,10 @@ class NavigationRoutes {
 
       case productScreen:
         return (_) => const ProductScreen();
+
+      case productDetailsScreen:
+        return (_) => const ProductDetailsScreen();
+
 
       default:
         return (_) => const RouteNotFoundScreen();

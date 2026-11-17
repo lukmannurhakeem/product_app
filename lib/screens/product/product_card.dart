@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:product_app/core/extension/theme_extension.dart';
+import 'package:product_app/core/locator/locator.dart';
+import 'package:product_app/core/navigation/navigation_route.dart';
+import 'package:product_app/core/navigation/navigation_service.dart';
 import 'package:product_app/data/model/products_response/products_response.dart';
 
 class ProductCard extends StatelessWidget {
@@ -11,36 +14,44 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = context.topology.textTheme;
 
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(child: _ProductImage(url: product.thumbnail)),
-          Padding(
-            padding: context.spacing.paddingS,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  product.title,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: textTheme.titleSmall,
-                ),
-                context.vXs,
-                Text(
-                  '\$${product.price.toStringAsFixed(2)}',
-                  style: textTheme.titleMedium?.copyWith(
-                    color: context.colors.primary,
+    return GestureDetector(
+      onTap: () {
+        locator<NavigationService>().navigateTo(
+          NavigationRoutes.productDetailsScreen,
+          arguments: product,
+        );
+      },
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: _ProductImage(url: product.thumbnail)),
+            Padding(
+              padding: context.spacing.paddingS,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    product.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: textTheme.titleSmall,
                   ),
-                ),
-                context.vXs,
-                _Rating(value: product.rating),
-              ],
+                  context.vXs,
+                  Text(
+                    '\$${product.price.toStringAsFixed(2)}',
+                    style: textTheme.titleMedium?.copyWith(
+                      color: context.colors.primary,
+                    ),
+                  ),
+                  context.vXs,
+                  _Rating(value: product.rating),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

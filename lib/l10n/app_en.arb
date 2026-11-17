@@ -18,5 +18,19 @@
   "productsEnd": "End of products",
 
   "searchHint": "Search products",
-  "productsNoResults": "No products found"
+  "productsNoResults": "No products found",
+
+
+  "removeFavourite": "Remove from favourites",
+  "addFavourite": "Add to favourites",
+  "productDescription": "Description",
+  "productInStock": "{stock} in stock",
+  "@productInStock": {
+    "placeholders": {
+      "stock": {
+        "type": "int"
+      }
+    }
+  },
+  "productOutOfStock": "Out of stock"
 }

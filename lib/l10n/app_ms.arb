@@ -17,5 +17,18 @@
 
   "productsEnd": "Produk tamat",
   "searchHint": "Carian produk",
-  "productsNoResults": "Tiada produk dijumpai"
+  "productsNoResults": "Tiada produk dijumpai",
+
+  "removeFavourite": "Buang daripada kegemaran",
+  "addFavourite": "Tambah ke kegemaran",
+  "productDescription": "Penerangan",
+  "productInStock": "{stock} dalam stok",
+  "@productInStock": {
+    "placeholders": {
+      "stock": {
+        "type": "int"
+      }
+    }
+  },
+  "productOutOfStock": "Tiada stok"
 }

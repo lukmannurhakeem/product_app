@@ -60,4 +60,21 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get productsNoResults => 'Tiada produk dijumpai';
+
+  @override
+  String get removeFavourite => 'Buang daripada kegemaran';
+
+  @override
+  String get addFavourite => 'Tambah ke kegemaran';
+
+  @override
+  String get productDescription => 'Penerangan';
+
+  @override
+  String productInStock(int stock) {
+    return '$stock dalam stok';
+  }
+
+  @override
+  String get productOutOfStock => 'Tiada stok';
 }
