@@ -101,8 +101,14 @@ abstract class AppLocalizations {
   /// No description provided for @errorNetwork.
   ///
   /// In en, this message translates to:
-  /// **'No internet connection. Please check your network and try again.'**
+  /// **'No internet connection.'**
   String get errorNetwork;
+
+  /// No description provided for @errorNetworkDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check your network and try again.'**
+  String get errorNetworkDescription;
 
   /// No description provided for @errorTimeout.
   ///

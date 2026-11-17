@@ -1,6 +1,7 @@
 {
   "@@locale": "ms",
-  "errorNetwork": "Tiada sambungan internet. Sila semak rangkaian anda dan cuba lagi.",
+  "errorNetwork": "Tiada sambungan internet.",
+  "errorNetworkDescription": "Sila semak rangkaian anda dan cuba lagi.",
   "errorTimeout": "Permintaan mengambil masa terlalu lama. Sila cuba lagi.",
   "errorSecureConnection": "Sambungan selamat tidak dapat diwujudkan.",
   "errorCancelled": "Permintaan telah dibatalkan.",

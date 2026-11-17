@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
+import 'package:product_app/core/errors/app_exception.dart';
 import 'package:product_app/core/extension/theme_extension.dart';
 import 'package:product_app/data/model/products_response/products_response.dart';
 import 'package:product_app/l10n/app_localizations.dart';
 import 'package:product_app/provider/product_provider.dart';
 import 'package:product_app/screens/product/product_card.dart';
 import 'package:provider/provider.dart';
+
+import '../../core/errors/app_exception_l10n.dart';
 
 class ProductScreen extends StatefulWidget {
   const ProductScreen({super.key});
@@ -92,7 +96,7 @@ class _ProductBody extends StatelessWidget {
       return const Center(child: CircularProgressIndicator());
     }
     if (provider.hasError && products.isEmpty) {
-      return _ErrorView(onRetry: provider.fetchProducts);
+      return _ErrorView(error: provider.error!, onRetry: provider.fetchProducts);
     }
     if (products.isEmpty) {
       return _EmptyView(isSearch: provider.query.isNotEmpty);
@@ -211,11 +215,14 @@ class _EmptyView extends StatelessWidget {
     );
   }
 }
-
 class _ErrorView extends StatelessWidget {
-  const _ErrorView({required this.onRetry});
+  const _ErrorView({required this.error, required this.onRetry});
 
+  final AppException error;
   final Future<void> Function() onRetry;
+
+  bool get _isOffline =>
+      error is NetworkException && error.code == AppErrorCode.network;
 
   @override
   Widget build(BuildContext context) {
@@ -227,11 +234,27 @@ class _ErrorView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (_isOffline)
+              Lottie.asset(
+                'assets/lottie/no_internet.lottie',
+                width: 220,
+                height: 220,
+                repeat: true,
+                errorBuilder: (_, __, ___) =>
+                const Icon(Icons.wifi_off, size: 96),
+              ),
+            context.vM,
             Text(
-              l10n.errorUnknown,
+              error.localized(l10n),
               textAlign: TextAlign.center,
-              style: context.topology.textTheme.bodyMedium,
+              style: context.topology.textTheme.titleMedium,
             ),
+            if (_isOffline)
+              Text(
+                l10n.errorNetworkDescription,
+                textAlign: TextAlign.center,
+                style: context.topology.textTheme.bodyMedium,
+              ),
             context.vXs,
             FilledButton(onPressed: onRetry, child: Text(l10n.retry)),
           ],

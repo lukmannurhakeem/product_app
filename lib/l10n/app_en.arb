@@ -1,6 +1,7 @@
 {
   "@@locale": "en",
-  "errorNetwork": "No internet connection. Please check your network and try again.",
+  "errorNetwork": "No internet connection.",
+  "errorNetworkDescription": "Please check your network and try again.",
   "errorTimeout": "The request took too long. Please try again.",
   "errorSecureConnection": "A secure connection could not be established.",
   "errorCancelled": "The request was cancelled.",

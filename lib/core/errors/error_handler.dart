@@ -1,4 +1,5 @@
 import 'dart:developer' as developer;
+import 'dart:io' show SocketException;
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -26,6 +27,7 @@ class ErrorHandler {
     return switch (error) {
       AppException() => error,
       DioException() => _fromDioException(error),
+      SocketException() => const NetworkException(),
       FormatException() || TypeError() => const DataParsingException(),
       _ => const UnknownException(),
     };
@@ -41,9 +43,10 @@ class ErrorHandler {
       DioExceptionType.receiveTimeout ||
       DioExceptionType.transformTimeout =>
       const TimeoutException(),
-      DioExceptionType.connectionError ||
-      DioExceptionType.unknown =>
-      const NetworkException(),
+      DioExceptionType.connectionError => const NetworkException(),
+      DioExceptionType.unknown => inner is SocketException
+          ? const NetworkException()
+          : const UnknownException(),
       DioExceptionType.badCertificate =>
       const NetworkException(code: AppErrorCode.secureConnection),
       DioExceptionType.cancel =>
