@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:product_app/core/extension/theme_extension.dart';
 import 'package:product_app/data/model/products_response/products_response.dart';
 import 'package:product_app/l10n/app_localizations.dart';
+import 'package:product_app/screens/product/favourite_button.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   const ProductDetailsScreen({super.key, this.product});
@@ -35,7 +37,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     final images = _imagesOf(product);
 
     return Scaffold(
-      appBar: AppBar(title: Text(product.title ?? '')),
+      appBar: AppBar(
+        title: Text(product.title),
+        actions: [FavouriteButton(product: product)],
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -47,24 +52,21 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(product.title ?? '', style: textTheme.titleLarge),
+                    Text(product.title, style: textTheme.titleLarge),
                     context.vS,
                     Text(
-                      '\RM ${(product.price ?? 0).toStringAsFixed(2)}',
+                      'RM ${product.price.toStringAsFixed(2)}',
                       style: textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
                     context.vS,
-                    _StockChip(stock: product.stock ?? 0),
+                    _StockChip(stock: product.stock),
                     context.vM,
                     Text(l10n.productDescription, style: textTheme.titleMedium),
                     context.vS,
-                    Text(
-                      product.description ?? '',
-                      style: textTheme.bodyMedium,
-                    ),
+                    Text(product.description, style: textTheme.bodyMedium),
                   ],
                 ),
               ),
@@ -76,9 +78,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   }
 
   List<String> _imagesOf(Product product) {
-    final list = <String>[...(product.images ?? const <String>[])];
-    if (list.isEmpty && (product.thumbnail?.isNotEmpty ?? false)) {
-      list.add(product.thumbnail!);
+    final list = <String>[...product.images];
+    final thumbnail = product.thumbnail;
+    if (list.isEmpty && thumbnail != null && thumbnail.isNotEmpty) {
+      list.add(thumbnail);
     }
     return list;
   }
@@ -121,14 +124,13 @@ class _ImageCarouselState extends State<_ImageCarousel> {
             controller: _controller,
             itemCount: widget.images.length,
             onPageChanged: (i) => setState(() => _index = i),
-            itemBuilder: (_, i) => Image.network(
-              widget.images[i],
+            itemBuilder: (_, i) => CachedNetworkImage(
+              imageUrl: widget.images[i],
               fit: BoxFit.contain,
-              loadingBuilder: (_, child, progress) => progress == null
-                  ? child
-                  : const Center(child: CircularProgressIndicator()),
-              errorBuilder: (_, __, ___) =>
-                  const Center(child: Icon(Icons.broken_image, size: 64)),
+              placeholder: (_, __) =>
+              const Center(child: CircularProgressIndicator()),
+              errorWidget: (_, __, ___) =>
+              const Center(child: Icon(Icons.broken_image, size: 64)),
             ),
           ),
           if (widget.images.length > 1)
@@ -138,7 +140,7 @@ class _ImageCarouselState extends State<_ImageCarousel> {
                 mainAxisSize: MainAxisSize.min,
                 children: List.generate(
                   widget.images.length,
-                  (i) => Container(
+                      (i) => Container(
                     width: 8,
                     height: 8,
                     margin: const EdgeInsets.symmetric(horizontal: 3),
@@ -183,7 +185,7 @@ class _StockChip extends StatelessWidget {
         inStock ? l10n.productInStock(stock) : l10n.productOutOfStock,
       ),
       side: BorderSide(color: color),
-      backgroundColor: color.withOpacity(0.1),
+      backgroundColor: color.withValues(alpha: 0.1),
     );
   }
 }

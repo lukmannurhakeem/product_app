@@ -1,4 +1,3 @@
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:product_app/core/extension/theme_extension.dart';
@@ -6,6 +5,7 @@ import 'package:product_app/core/locator/locator.dart';
 import 'package:product_app/core/navigation/navigation_route.dart';
 import 'package:product_app/core/navigation/navigation_service.dart';
 import 'package:product_app/data/model/products_response/products_response.dart';
+import 'package:product_app/screens/product/favourite_button.dart';
 
 class ProductCard extends StatelessWidget {
   const ProductCard({super.key, required this.product});
@@ -28,7 +28,19 @@ class ProductCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(child: _ProductImage(url: product.thumbnail)),
+            Expanded(
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  _ProductImage(url: product.thumbnail),
+                  Positioned(
+                    top: 4,
+                    right: 4,
+                    child: FavouriteButton(product: product, filled: true),
+                  ),
+                ],
+              ),
+            ),
             Padding(
               padding: context.spacing.paddingS,
               child: Column(

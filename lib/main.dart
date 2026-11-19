@@ -4,6 +4,7 @@ import 'package:product_app/core/locator/locator.dart';
 import 'package:product_app/core/navigation/navigation_route.dart';
 import 'package:product_app/core/navigation/navigation_service.dart';
 import 'package:product_app/l10n/app_localizations.dart';
+import 'package:product_app/provider/favourite_provider.dart';
 import 'package:product_app/provider/product_provider.dart';
 import 'package:product_app/provider/theme_provider.dart';
 import 'package:product_app/service/snackbar_service.dart';
@@ -30,20 +31,15 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<ProductProvider>.value(
           value: locator<ProductProvider>(),
-        )
+        ),
+        ChangeNotifierProvider.value(value: locator<FavouriteProvider>()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, theme, _) => MaterialApp(
           title: 'Product App',
           debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            useMaterial3: true,
-            brightness: Brightness.light,
-          ),
-          darkTheme: ThemeData(
-            useMaterial3: true,
-            brightness: Brightness.dark,
-          ),
+          theme: ThemeData(useMaterial3: true, brightness: Brightness.light),
+          darkTheme: ThemeData(useMaterial3: true, brightness: Brightness.dark),
           themeMode: theme.themeMode,
           localizationsDelegates: const [
             AppLocalizations.delegate,
