@@ -18,7 +18,7 @@ _ProductsResponse _$ProductsResponseFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$ProductsResponseToJson(_ProductsResponse instance) =>
     <String, dynamic>{
-      'products': instance.products,
+      'products': instance.products.map((e) => e.toJson()).toList(),
       'total': instance.total,
       'skip': instance.skip,
       'limit': instance.limit,
@@ -74,14 +74,14 @@ Map<String, dynamic> _$ProductToJson(_Product instance) => <String, dynamic>{
   'brand': instance.brand,
   'sku': instance.sku,
   'weight': instance.weight,
-  'dimensions': instance.dimensions,
+  'dimensions': instance.dimensions?.toJson(),
   'warrantyInformation': instance.warrantyInformation,
   'shippingInformation': instance.shippingInformation,
   'availabilityStatus': instance.availabilityStatus,
-  'reviews': instance.reviews,
+  'reviews': instance.reviews.map((e) => e.toJson()).toList(),
   'returnPolicy': instance.returnPolicy,
   'minimumOrderQuantity': instance.minimumOrderQuantity,
-  'meta': instance.meta,
+  'meta': instance.meta?.toJson(),
   'thumbnail': instance.thumbnail,
   'images': instance.images,
 };

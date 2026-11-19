@@ -22,6 +22,7 @@ class ProductProvider extends ChangeNotifier {
   bool _isLoading = false;
   bool _isLoadingMore = false;
   bool _hasMore = true;
+  bool _isOffline = false;
   int _fetchIncrement = 0;
   AppException? _error;
 
@@ -31,6 +32,8 @@ class ProductProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
 
   bool get isLoadingMore => _isLoadingMore;
+
+  bool get isOffline => _isOffline;
 
   AppException? get error => _error;
 
@@ -53,12 +56,27 @@ class ProductProvider extends ChangeNotifier {
       if (increment != _fetchIncrement) return;
 
       _products = model.products;
+      _isOffline = false;
       _hasMore = model.products.isNotEmpty && _products.length < model.total;
     } catch (e, st) {
       if (increment != _fetchIncrement) return;
-      _error = ErrorHandler.handle(e, st);
-      if (_products.isNotEmpty) {
-        SnackbarService.showError(e, stackTrace: st);
+
+      final error = ErrorHandler.handle(e, st);
+      final cached = error is NetworkException &&
+          _query.isEmpty &&
+          _products.isEmpty
+          ? _productRepository.getCachedProducts()
+          : null;
+
+      if (cached != null && cached.products.isNotEmpty) {
+        _products = cached.products;
+        _isOffline = true;
+        _hasMore = false;
+      } else {
+        _error = error;
+        if (_products.isNotEmpty) {
+          SnackbarService.showError(e, stackTrace: st);
+        }
       }
     } finally {
       if (increment == _fetchIncrement) {
@@ -113,6 +131,7 @@ class ProductProvider extends ChangeNotifier {
       if (newQuery == _query) return;
       _query = newQuery;
       _products = [];
+      _isOffline = false;
       fetchProducts();
     });
   }

@@ -26,6 +26,7 @@ dependencies:
   pretty_dio_logger: ^1.4.0
   flutter_secure_storage: ^11.2.0
   lottie: ^3.8.2
+  cached_network_image: ^4.0.7
 
 dev_dependencies:
   flutter_test:

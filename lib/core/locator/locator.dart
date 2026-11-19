@@ -5,6 +5,7 @@ import 'package:product_app/core/network/api_client.dart';
 import 'package:product_app/data/impl/products_impl.dart';
 import 'package:product_app/data/repositories/product_repository.dart';
 import 'package:product_app/provider/product_provider.dart';
+import 'package:product_app/storage/product_storage.dart';
 import 'package:product_app/storage/theme_storage.dart';
 
 final GetIt locator = GetIt.instance;
@@ -21,10 +22,13 @@ Future<void> setupLocator() async {
   locator.registerLazySingleton<ThemeStorage>(
         () => ThemeStorage(locator<LocalStorageService>()),
   );
+  locator.registerLazySingleton<ProductStorage>(
+        () => ProductStorage(locator<LocalStorageService>()),
+  );
 
   // Repositories
   locator.registerLazySingleton<ProductRepository>(
-        () => ProductsImpl(locator<ApiClient>()),
+        () => ProductsImpl(locator<ApiClient>(), locator<ProductStorage>()),
   );
 
   // Providers

@@ -1,3 +1,5 @@
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:product_app/core/extension/theme_extension.dart';
 import 'package:product_app/core/locator/locator.dart';
@@ -69,13 +71,12 @@ class _ProductImage extends StatelessWidget {
       return const _ImagePlaceholder();
     }
 
-    return Image.network(
-      imageUrl,
+    return CachedNetworkImage(
+      imageUrl: imageUrl,
       width: double.infinity,
       fit: BoxFit.cover,
-      loadingBuilder: (context, child, progress) =>
-          progress == null ? child : const _ImagePlaceholder(isLoading: true),
-      errorBuilder: (context, error, stackTrace) => const _ImagePlaceholder(),
+      placeholder: (context, url) => const _ImagePlaceholder(isLoading: true),
+      errorWidget: (context, url, error) => const _ImagePlaceholder(),
     );
   }
 }
@@ -94,14 +95,14 @@ class _ImagePlaceholder extends StatelessWidget {
       child: Center(
         child: isLoading
             ? const SizedBox.square(
-                dimension: 24,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              )
+          dimension: 24,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        )
             : Icon(
-                Icons.image_not_supported_outlined,
-                size: 40,
-                color: scheme.outline,
-              ),
+          Icons.image_not_supported_outlined,
+          size: 40,
+          color: scheme.outline,
+        ),
       ),
     );
   }

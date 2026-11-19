@@ -101,12 +101,49 @@ class _ProductBody extends StatelessWidget {
     if (products.isEmpty) {
       return _EmptyView(isSearch: provider.query.isNotEmpty);
     }
-    return _ProductGrid(
-      products: products,
-      isLoadingMore: provider.isLoadingMore,
-      hasMore: provider.hasMore,
-      onRefresh: provider.fetchProducts,
-      onLoadMore: provider.loadMore,
+    return Column(
+      children: [
+        if (provider.isOffline) const _OfflineNotice(),
+        Expanded(
+          child: _ProductGrid(
+            products: products,
+            isLoadingMore: provider.isLoadingMore,
+            hasMore: provider.hasMore,
+            onRefresh: provider.fetchProducts,
+            onLoadMore: provider.loadMore,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _OfflineNotice extends StatelessWidget {
+  const _OfflineNotice();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+
+    return Container(
+      width: double.infinity,
+      color: scheme.errorContainer,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(
+        children: [
+          Icon(Icons.wifi_off, size: 18, color: scheme.onErrorContainer),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              l10n.errorNetwork,
+              style: context.topology.textTheme.bodySmall?.copyWith(
+                color: scheme.onErrorContainer,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -175,8 +212,7 @@ class _ProductGridState extends State<_ProductGrid> {
                 childAspectRatio: 0.68,
               ),
               delegate: SliverChildBuilderDelegate(
-                    (context, index) =>
-                    ProductCard(product: widget.products[index]),
+                    (context, index) => ProductCard(product: widget.products[index]),
                 childCount: widget.products.length,
               ),
             ),
@@ -215,6 +251,7 @@ class _EmptyView extends StatelessWidget {
     );
   }
 }
+
 class _ErrorView extends StatelessWidget {
   const _ErrorView({required this.error, required this.onRetry});
 

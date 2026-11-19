@@ -7,4 +7,5 @@ abstract class ProductRepository {
     required int limit,
     required int skip,
   });
+  ProductsResponse? getCachedProducts();
 }
