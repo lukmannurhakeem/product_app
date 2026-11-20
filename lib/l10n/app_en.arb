@@ -33,5 +33,8 @@
       }
     }
   },
-  "productOutOfStock": "Out of stock"
+  "productOutOfStock": "Out of stock",
+
+  "wishlistTitle" : "Wish list",
+  "wishlistEmpty": "Wish list is empty"
 }

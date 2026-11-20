@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:product_app/core/errors/app_exception.dart';
 import 'package:product_app/core/extension/theme_extension.dart';
+import 'package:product_app/core/locator/locator.dart';
+import 'package:product_app/core/navigation/navigation_route.dart';
+import 'package:product_app/core/navigation/navigation_service.dart';
 import 'package:product_app/data/model/products_response/products_response.dart';
 import 'package:product_app/l10n/app_localizations.dart';
+import 'package:product_app/provider/favourite_provider.dart';
 import 'package:product_app/provider/product_provider.dart';
 import 'package:product_app/screens/product/product_card.dart';
 import 'package:provider/provider.dart';
@@ -53,6 +57,7 @@ class _ProductScreenState extends State<ProductScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.productsTitle)),
+      floatingActionButton: const _WishlistFab(),
       body: SafeArea(
         child: Column(
           children: [
@@ -79,6 +84,28 @@ class _ProductScreenState extends State<ProductScreen> {
             const Expanded(child: _ProductBody()),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _WishlistFab extends StatelessWidget {
+  const _WishlistFab();
+
+  @override
+  Widget build(BuildContext context) {
+    final count = context.select<FavouriteProvider, int>(
+          (p) => p.items.length,
+    );
+
+    return Badge(
+      isLabelVisible: count > 0,
+      label: Text('$count'),
+      child: FloatingActionButton(
+        onPressed: () => locator<NavigationService>().navigateTo(
+          NavigationRoutes.wishlistScreen,
+        ),
+        child: const Icon(Icons.favorite),
       ),
     );
   }
@@ -231,6 +258,8 @@ class _ProductGridState extends State<_ProductGrid> {
                 child: Center(child: Text(l10n.productsEnd)),
               ),
             ),
+          // Keeps the last row clear of the floating button.
+          const SliverToBoxAdapter(child: SizedBox(height: 80)),
         ],
       ),
     );

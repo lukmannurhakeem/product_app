@@ -80,4 +80,10 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get productOutOfStock => 'Tiada stok';
+
+  @override
+  String get wishlistTitle => 'Kegemaran';
+
+  @override
+  String get wishlistEmpty => 'Tiada kegemaran';
 }

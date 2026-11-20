@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:product_app/screens/product/product_screen.dart';
-import 'package:product_app/screens/product_details/product_details_screen.dart';
+import 'package:product_app/screens/product/product_details_screen.dart';
 import 'package:product_app/screens/route_not_found_screen.dart';
 import 'package:product_app/screens/splash_screen.dart';
+import 'package:product_app/screens/wishlist/wishlist_screen.dart';
 
 /// To add a new screen:
 ///   1. Add a `static const String` route name below.
@@ -15,6 +16,7 @@ class NavigationRoutes {
   static const String splash = '/splash';
   static const String productScreen = '/productScreen';
   static const String productDetailsScreen = '/productDetailsScreen';
+  static const String wishlistScreen = '/wishlistScreen';
 
 
   static WidgetBuilder getBuilder(String routeName, Object? arguments) {
@@ -27,6 +29,9 @@ class NavigationRoutes {
 
       case productDetailsScreen:
         return (_) => const ProductDetailsScreen();
+
+        case wishlistScreen:
+          return (_) => const WishlistScreen();
 
 
       default:

@@ -79,4 +79,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get productOutOfStock => 'Out of stock';
+
+  @override
+  String get wishlistTitle => 'Wish list';
+
+  @override
+  String get wishlistEmpty => 'Wish list is empty';
 }

@@ -31,5 +31,7 @@
       }
     }
   },
-  "productOutOfStock": "Tiada stok"
+  "productOutOfStock": "Tiada stok",
+  "wishlistTitle" : "Kegemaran",
+  "wishlistEmpty" : "Tiada kegemaran"
 }
