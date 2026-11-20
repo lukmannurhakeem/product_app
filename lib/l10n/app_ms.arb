@@ -11,15 +11,12 @@
   "errorServer": "Ralat pelayan. Sila cuba lagi nanti.",
   "errorParsing": "Data yang diterima tidak dapat diproses.",
   "errorUnknown": "Sesuatu telah berlaku. Sila cuba lagi.",
-
   "productsTitle": "Produk",
   "productsEmpty": "Tiada produk tersedia.",
   "retry": "Cuba lagi",
-
   "productsEnd": "Produk tamat",
   "searchHint": "Carian produk",
   "productsNoResults": "Tiada produk dijumpai",
-
   "removeFavourite": "Buang daripada kegemaran",
   "addFavourite": "Tambah ke kegemaran",
   "productDescription": "Penerangan",
@@ -32,6 +29,8 @@
     }
   },
   "productOutOfStock": "Tiada stok",
-  "wishlistTitle" : "Kegemaran",
-  "wishlistEmpty" : "Tiada kegemaran"
+  "wishlistTitle": "Kegemaran",
+  "wishlistEmpty": "Tiada kegemaran",
+  "recentSearches": "Cari terakhir",
+  "clearRecentSearches": "Padam"
 }

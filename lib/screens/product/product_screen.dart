@@ -9,6 +9,7 @@ import 'package:product_app/data/model/products_response/products_response.dart'
 import 'package:product_app/l10n/app_localizations.dart';
 import 'package:product_app/provider/favourite_provider.dart';
 import 'package:product_app/provider/product_provider.dart';
+import 'package:product_app/provider/recent_search_provider.dart';
 import 'package:product_app/screens/product/product_card.dart';
 import 'package:provider/provider.dart';
 
@@ -23,10 +24,12 @@ class ProductScreen extends StatefulWidget {
 
 class _ProductScreenState extends State<ProductScreen> {
   final TextEditingController _searchController = TextEditingController();
+  final FocusNode _searchFocus = FocusNode();
 
   @override
   void initState() {
     super.initState();
+    _searchFocus.addListener(_onFocusChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       final provider = context.read<ProductProvider>();
@@ -37,9 +40,13 @@ class _ProductScreenState extends State<ProductScreen> {
 
   @override
   void dispose() {
+    _searchFocus.removeListener(_onFocusChanged);
+    _searchFocus.dispose();
     _searchController.dispose();
     super.dispose();
   }
+
+  void _onFocusChanged() => setState(() {});
 
   void _onChanged(String value) {
     setState(() {});
@@ -51,9 +58,28 @@ class _ProductScreenState extends State<ProductScreen> {
     _onChanged('');
   }
 
+  void _onSubmitted(String value) {
+    context.read<RecentSearchProvider>().add(value);
+    context.read<ProductProvider>().searchNow(value);
+    _searchFocus.unfocus();
+  }
+
+  void _onRecentSelected(String query) {
+    _searchController.value = TextEditingValue(
+      text: query,
+      selection: TextSelection.collapsed(offset: query.length),
+    );
+    _onSubmitted(query);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final hasRecent = context.select<RecentSearchProvider, bool>(
+          (p) => p.items.isNotEmpty,
+    );
+    final showRecent =
+        _searchFocus.hasFocus && _searchController.text.isEmpty && hasRecent;
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.productsTitle)),
@@ -65,7 +91,10 @@ class _ProductScreenState extends State<ProductScreen> {
               padding: context.spacing.paddingS,
               child: TextField(
                 controller: _searchController,
+                focusNode: _searchFocus,
                 onChanged: _onChanged,
+                onSubmitted: _onSubmitted,
+                onTapOutside: (_) => _searchFocus.unfocus(),
                 textInputAction: TextInputAction.search,
                 decoration: InputDecoration(
                   hintText: l10n.searchHint,
@@ -81,9 +110,58 @@ class _ProductScreenState extends State<ProductScreen> {
                 ),
               ),
             ),
-            const Expanded(child: _ProductBody()),
+            Expanded(
+              child: showRecent
+                  ? _RecentSearches(onSelected: _onRecentSelected)
+                  : const _ProductBody(),
+            ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _RecentSearches extends StatelessWidget {
+  const _RecentSearches({required this.onSelected});
+
+  final ValueChanged<String> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final items = context.watch<RecentSearchProvider>().items;
+
+    // TextFieldTapRegion stops taps here from counting as "outside" the
+    // search field, which would unfocus it before onTap fires.
+    return TextFieldTapRegion(
+      child: ListView(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 16, right: 8),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n.recentSearches,
+                    style: context.topology.textTheme.titleSmall,
+                  ),
+                ),
+                TextButton(
+                  onPressed: context.read<RecentSearchProvider>().clear,
+                  child: Text(l10n.clearRecentSearches),
+                ),
+              ],
+            ),
+          ),
+          for (final query in items)
+            ListTile(
+              dense: true,
+              leading: const Icon(Icons.history),
+              title: Text(query, maxLines: 1, overflow: TextOverflow.ellipsis),
+              onTap: () => onSelected(query),
+            ),
+        ],
       ),
     );
   }

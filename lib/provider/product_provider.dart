@@ -126,14 +126,21 @@ class ProductProvider extends ChangeNotifier {
 
   void onSearchChanged(String value) {
     _debounce?.cancel();
-    _debounce = Timer(_debounceDuration, () {
-      final newQuery = value.trim();
-      if (newQuery == _query) return;
-      _query = newQuery;
-      _products = [];
-      _isOffline = false;
-      fetchProducts();
-    });
+    _debounce = Timer(_debounceDuration, () => _applyQuery(value));
+  }
+
+  void searchNow(String value) {
+    _debounce?.cancel();
+    _applyQuery(value);
+  }
+
+  void _applyQuery(String value) {
+    final newQuery = value.trim();
+    if (newQuery == _query) return;
+    _query = newQuery;
+    _products = [];
+    _isOffline = false;
+    fetchProducts();
   }
 
   void resetSearch() {

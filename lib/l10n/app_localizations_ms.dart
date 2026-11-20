@@ -86,4 +86,10 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get wishlistEmpty => 'Tiada kegemaran';
+
+  @override
+  String get recentSearches => 'Cari terakhir';
+
+  @override
+  String get clearRecentSearches => 'Padam';
 }

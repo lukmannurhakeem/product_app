@@ -5,4 +5,5 @@ class LocalStorageKeys {
   static const localeCode = 'locale_code';
   static const products = 'products_cache';
   static const favourites = 'favourites';
+  static const recentSearches = 'recent_searches';
 }

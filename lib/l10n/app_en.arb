@@ -36,5 +36,7 @@
   "productOutOfStock": "Out of stock",
 
   "wishlistTitle" : "Wish list",
-  "wishlistEmpty": "Wish list is empty"
+  "wishlistEmpty": "Wish list is empty",
+  "recentSearches": "Recent searches",
+  "clearRecentSearches": "Clear"
 }

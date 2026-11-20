@@ -6,6 +6,7 @@ import 'package:product_app/core/navigation/navigation_service.dart';
 import 'package:product_app/l10n/app_localizations.dart';
 import 'package:product_app/provider/favourite_provider.dart';
 import 'package:product_app/provider/product_provider.dart';
+import 'package:product_app/provider/recent_search_provider.dart';
 import 'package:product_app/provider/theme_provider.dart';
 import 'package:product_app/service/snackbar_service.dart';
 import 'package:product_app/storage/theme_storage.dart';
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
           value: locator<ProductProvider>(),
         ),
         ChangeNotifierProvider.value(value: locator<FavouriteProvider>()),
+        ChangeNotifierProvider.value(value: locator<RecentSearchProvider>()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, theme, _) => MaterialApp(

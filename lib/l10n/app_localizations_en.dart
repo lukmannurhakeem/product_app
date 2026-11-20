@@ -85,4 +85,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get wishlistEmpty => 'Wish list is empty';
+
+  @override
+  String get recentSearches => 'Recent searches';
+
+  @override
+  String get clearRecentSearches => 'Clear';
 }

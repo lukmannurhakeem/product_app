@@ -6,8 +6,10 @@ import 'package:product_app/data/impl/products_impl.dart';
 import 'package:product_app/data/repositories/product_repository.dart';
 import 'package:product_app/provider/favourite_provider.dart';
 import 'package:product_app/provider/product_provider.dart';
+import 'package:product_app/provider/recent_search_provider.dart';
 import 'package:product_app/storage/favourite_storage.dart';
 import 'package:product_app/storage/product_storage.dart';
+import 'package:product_app/storage/recent_search_storage.dart';
 import 'package:product_app/storage/theme_storage.dart';
 
 final GetIt locator = GetIt.instance;
@@ -30,6 +32,9 @@ Future<void> setupLocator() async {
   locator.registerLazySingleton<FavouriteStorage>(
         () => FavouriteStorage(locator<LocalStorageService>()),
   );
+  locator.registerLazySingleton<RecentSearchStorage>(
+        () => RecentSearchStorage(locator<LocalStorageService>()),
+  );
 
   // Repositories
   locator.registerLazySingleton<ProductRepository>(
@@ -42,5 +47,8 @@ Future<void> setupLocator() async {
   );
   locator.registerLazySingleton<FavouriteProvider>(
         () => FavouriteProvider(locator<FavouriteStorage>()),
+  );
+  locator.registerLazySingleton<RecentSearchProvider>(
+        () => RecentSearchProvider(locator<RecentSearchStorage>()),
   );
 }
