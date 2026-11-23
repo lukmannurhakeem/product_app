@@ -1,15 +1,31 @@
 # Product Catalog App
 
-A Flutter mobile application for browsing, searching, viewing, and favouriting products. The application supports infinite scrolling, offline fallback, persistent local storage, and recent search history.
+A Flutter mobile application for browsing, searching, viewing, and favouriting products. It supports infinite scrolling, offline fallback, persistent local storage, and recent search history.
 
 ## Project Overview
 
 | Information | Details |
 |---|---|
 | Project | Product Catalog App |
-| Platform | Flutter |
+| Platform | Flutter (managed with FVM) |
+| Architecture | MVVM + Repository pattern |
+| State Management | Provider (`ChangeNotifier`) |
 | Version | 1.0 |
 | Requirements Version | 12 November 2026 |
+
+## Table of Contents
+
+- [Features](#features)
+- [Architecture](#architecture)
+- [Getting Started](#getting-started)
+- [Environment Configuration](#environment-configuration)
+- [Running the Application](#running-the-application)
+- [Building the Application](#building-the-application)
+- [Documentation](#documentation)
+- [Functional Requirements](#functional-requirements)
+- [Non-Functional Requirements](#non-functional-requirements)
+- [Acceptance Criteria](#acceptance-criteria)
+- [Future Improvements](#future-improvements)
 
 ## Features
 
@@ -63,38 +79,83 @@ A Flutter mobile application for browsing, searching, viewing, and favouriting p
 - Retry functionality.
 - Pull-to-refresh to reload the first page.
 
+## Architecture
+
+The app follows **MVVM (Model–View–ViewModel)** with the **Repository pattern**. Business logic is kept out of widgets, and each layer depends only on the layer beneath it.
+
+```text
+┌──────────────────────────────────────────────┐
+│ View (Widgets / Screens)                     │
+│ Renders state, forwards user actions         │
+└───────────────┬──────────────────────────────┘
+                │ context.watch / context.read
+┌───────────────▼──────────────────────────────┐
+│ ViewModel (ChangeNotifier)                   │
+│ Holds UI state, handles logic, notifies View │
+└───────────────┬──────────────────────────────┘
+                │ calls
+┌───────────────▼──────────────────────────────┐
+│ Repository (abstract in domain, impl in data)│
+│ Single source of truth for data              │
+└───────┬───────────────────────┬──────────────┘
+        │                       │
+┌───────▼────────┐     ┌────────▼─────────────┐
+│ Remote Source  │     │ Local Source         │
+│ (REST API)     │     │ (cache, favourites,  │
+│                │     │  recent searches)    │
+└────────────────┘     └──────────────────────┘
+```
+
+### Layer Responsibilities
+
+| Layer | Responsibility | Must not |
+|---|---|---|
+| **Model** | Immutable data classes (`Product`, etc.) and JSON serialization. | Contain UI or business logic. |
+| **View** | Widgets and screens. Observe the ViewModel and send user events to it. | Call repositories or contain business logic. |
+| **ViewModel** | Holds screen state (loading, data, error, offline), exposes actions (`loadMore`, `search`, `toggleFavourite`), and calls `notifyListeners()`. | Import Flutter widgets or use `BuildContext`. |
+| **Repository** | Decides between remote and local data, handles caching and offline fallback, returns `Result` types. | Know about the UI. |
+| **Data Source** | Remote API client and local storage access. | Contain business rules. |
+
+### ViewModels
+
+| ViewModel | Screen | Responsibilities |
+|---|---|---|
+| `ProductListViewModel` | Product listing | Pagination (20 per page), duplicate prevention, concurrent request guard, pull-to-refresh, offline fallback. |
+| `SearchViewModel` | Search | 400 ms debounce, stale-result protection, search pagination, recent searches. |
+| `ProductDetailViewModel` | Product details | Loads product details, exposes stock and description. |
+| `FavouritesViewModel` | Wishlist (app-wide) | Single source of truth for favourites, persistence, cross-screen sync, instant removal. |
+
+`FavouritesViewModel` is provided at the app root, so listing, details, and wishlist all react to the same state (FR-07, NFR-02).
+
+### Data Flow
+
+1. The **View** triggers an action, such as scrolling to the end of the list.
+2. The **ViewModel** updates its state (for example `loading`) and calls the repository.
+3. The **Repository** fetches from remote, falls back to the local cache on failure, and returns a `Result`.
+4. The **ViewModel** maps the result to state (`success`, `empty`, `error`, `offline`) and calls `notifyListeners()`.
+5. The **View** rebuilds from the new state.
+
 ## Getting Started
 
 ### Prerequisites
 
-- Flutter SDK
 - [Flutter Version Management (FVM)](https://fvm.app/)
-- Dart SDK
+- Flutter SDK (installed through FVM)
+- Dart SDK (bundled with Flutter)
 - Android Studio or Visual Studio Code
 
 ### Installation
 
-Clone the repository:
-
 ```bash
 git clone https://github.com/lukmannurhakeem/product_app.git
-```
-
-Navigate to the project directory:
-
-```bash
 cd product_app
-```
-
-Install dependencies:
-
-```bash
+fvm install
 fvm flutter pub get
 ```
 
-### Environment Configuration
+## Environment Configuration
 
-The application uses environment-specific JSON configuration files located in the `env/` directory.
+The application uses environment-specific JSON configuration files in the `env/` directory.
 
 ```text
 env/
@@ -103,21 +164,17 @@ env/
 └── prod.json
 ```
 
-### Running the Application
+Values are injected at build time with `--dart-define-from-file`.
 
-**Development**
+## Running the Application
 
-```bash
-fvm flutter run --dart-define-from-file=env/dev.json
-```
+| Environment | Command |
+|---|---|
+| Development | `fvm flutter run --dart-define-from-file=env/dev.json` |
+| Staging | `fvm flutter run --dart-define-from-file=env/staging.json` |
+| Production | `fvm flutter run --dart-define-from-file=env/prod.json` |
 
-**Staging**
-
-```bash
-fvm flutter run --dart-define-from-file=env/staging.json
-```
-
-### Building the Application
+## Building the Application
 
 **Production APK**
 
@@ -125,11 +182,27 @@ fvm flutter run --dart-define-from-file=env/staging.json
 fvm flutter build apk --dart-define-from-file=env/prod.json
 ```
 
-The generated APK can be found at:
+Output:
 
 ```text
 build/app/outputs/flutter-apk/app-release.apk
 ```
+
+## Documentation
+
+Each requirement is documented on the branch where it was implemented.
+
+| ID | Requirement | Documentation |
+|---|---|---|
+| FR-01 | Product listing | [FR-01.md](https://github.com/lukmannurhakeem/product_app/blob/feature/FR-01/docs/FR-01.md) |
+| FR-02 | Infinite scrolling | [FR-02.md](https://github.com/lukmannurhakeem/product_app/blob/feature/FR-02/docs/FR-02.md) |
+| FR-03 | Product search | [FR-03.md](https://github.com/lukmannurhakeem/product_app/blob/feature/FR-03/docs/FR-03.md) |
+| FR-04 | Product details | [FR-04.md](https://github.com/lukmannurhakeem/product_app/blob/feature/FR-04/docs/FR-04.md) |
+| FR-05 | Application states | [FR-05.md](https://github.com/lukmannurhakeem/product_app/blob/feature/FR-05/docs/FR-05.md) |
+| FR-06 | Offline fallback | [FR-06.md](https://github.com/lukmannurhakeem/product_app/blob/feature/FR-06/docs/FR-06.md) |
+| FR-07 | Favourites | [FR-07.md](https://github.com/lukmannurhakeem/product_app/blob/feature/FR-06/docs/FR-07.md) |
+| FR-08 | Wishlist | [FR-08.md](https://github.com/lukmannurhakeem/product_app/blob/feature/FR-06/docs/FR-08.md) |
+| FR-09 | Recent searches | [FR-09.md](https://github.com/lukmannurhakeem/product_app/blob/feature/FR-06/docs/FR-09.md) |
 
 ## Functional Requirements
 
@@ -170,8 +243,25 @@ build/app/outputs/flutter-apk/app-release.apk
 - [ ] Recent searches retain the latest 5 searches.
 - [ ] Recent searches persist across application restarts.
 
+## Future Improvements
+
+### Localisation (i18n / l10n)
+Support more users and markets, which matters for an e-commerce app.
+
+- **Multi-language UI**: use `flutter_localizations` and `intl` with ARB files (e.g. English, Bahasa Melayu, Chinese, Tamil).
+- **Locale-aware formatting**: prices, currency, numbers, and dates formatted per locale.
+- **Multi-currency pricing**: display prices in the user's currency.
+- **Language switcher**: in-app language selection, persisted locally and defaulting to the device locale.
+- **RTL support**: layouts that adapt for right-to-left languages such as Arabic.
+- **Localised error and empty-state messages**: move all user-facing strings out of the widgets.
+
+### Other Ideas
+- Sorting and filtering (category, price range, rating).
+- Dark mode.
+- Unit, widget, and integration test coverage reporting in CI.
+
 ---
 
 **Platform:** Flutter  
 **Requirements Document:** User Requirements Specification v1.0  
-**Last Updated:** 12 November 2026
+**Last Updated:** 23 November 2026
