@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:product_app/core/extension/theme_extension.dart';
 import 'package:product_app/core/locator/locator.dart';
 import 'package:product_app/core/navigation/navigation_route.dart';
@@ -15,7 +16,7 @@ class SplashScreen extends StatefulWidget {
     super.key,
     this.animationDuration = const Duration(milliseconds: 1800),
     this.idleDuration = const Duration(milliseconds: 2400),
-    this.logoAssetPath = 'assets/images/logo.png',
+    this.logoAssetPath = 'assets/lottie/logo.lottie',
   });
 
   /// Entrance animation (plays once).
@@ -23,6 +24,8 @@ class SplashScreen extends StatefulWidget {
 
   /// One half-cycle of the idle movement that loops while loading.
   final Duration idleDuration;
+
+  /// Path to the Lottie / dotLottie logo asset.
   final String logoAssetPath;
 
   @override
@@ -35,7 +38,9 @@ class _SplashScreenState extends State<SplashScreen>
 
   late final AnimationController _controller; // entrance
   late final AnimationController _idle; // loops while loading
+  late final AnimationController _lottie; // logo playback
   late final Future<void> _animationDone;
+  final Completer<void> _logoDone = Completer<void>();
 
   bool _isLoading = true;
 
@@ -47,6 +52,7 @@ class _SplashScreenState extends State<SplashScreen>
       duration: widget.animationDuration,
     );
     _idle = AnimationController(vsync: this, duration: widget.idleDuration);
+    _lottie = AnimationController(vsync: this);
 
     _animationDone = _controller.forward();
     _animationDone.then((_) {
@@ -57,12 +63,16 @@ class _SplashScreenState extends State<SplashScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) => _init());
   }
 
+  void _onLogoLoaded(LottieComposition composition) {
+    if (_logoDone.isCompleted) return;
+    _lottie.duration = composition.duration;
+    _lottie.forward().whenComplete(_logoDone.complete);
+  }
+
   Future<void> _init() async {
     await Future<void>.delayed(const Duration(milliseconds: 300));
 
-    await Future.wait([
-      _animationDone,
-    ]);
+    await Future.wait([_animationDone, _logoDone.future]);
 
     _isLoading = false;
     if (!mounted) return;
@@ -75,7 +85,7 @@ class _SplashScreenState extends State<SplashScreen>
     if (!mounted) return;
 
     locator<NavigationService>().navigateToAndRemoveUntil(
-       NavigationRoutes.productScreen,
+      NavigationRoutes.productScreen,
     );
   }
 
@@ -83,6 +93,7 @@ class _SplashScreenState extends State<SplashScreen>
   void dispose() {
     _controller.dispose();
     _idle.dispose();
+    _lottie.dispose();
     super.dispose();
   }
 
@@ -97,7 +108,16 @@ class _SplashScreenState extends State<SplashScreen>
           Center(
             child: AnimatedSplashLogo(
               animation: _controller,
-              assetPath: widget.logoAssetPath,
+              builder: (width) => Lottie.asset(
+                widget.logoAssetPath,
+                controller: _lottie,
+                width: width,
+                onLoaded: _onLogoLoaded,
+                errorBuilder: (_, _, _) {
+                  if (!_logoDone.isCompleted) _logoDone.complete();
+                  return const SizedBox.shrink();
+                },
+              ),
             ),
           ),
         ],
@@ -328,16 +348,19 @@ class BottomShape extends StatelessWidget {
 // LOGO
 // ============================================================
 
+/// Fades / slides / scales in whatever [builder] returns (the Lottie logo).
 class AnimatedSplashLogo extends StatelessWidget {
   const AnimatedSplashLogo({
     super.key,
     required this.animation,
-    required this.assetPath,
+    required this.builder,
     this.width,
   });
 
   final Animation<double> animation;
-  final String assetPath;
+
+  /// Builds the logo at the resolved width.
+  final Widget Function(double width) builder;
 
   /// Defaults to 40% of the available width, clamped to 120–240.
   final double? width;
@@ -367,7 +390,7 @@ class AnimatedSplashLogo extends StatelessWidget {
                 scale: animation.drive(
                   Tween<double>(begin: 0.90, end: 1.0).chain(curve),
                 ),
-                child: Image.asset(assetPath, width: logoWidth),
+                child: builder(logoWidth),
               ),
             ),
           ),

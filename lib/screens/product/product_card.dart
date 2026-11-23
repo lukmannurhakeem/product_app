@@ -54,7 +54,7 @@ class ProductCard extends StatelessWidget {
                   ),
                   context.vXs,
                   Text(
-                    '\$${product.price.toStringAsFixed(2)}',
+                    '\RM ${product.price.toStringAsFixed(2)}',
                     style: textTheme.titleMedium?.copyWith(
                       color: context.colors.primary,
                     ),
